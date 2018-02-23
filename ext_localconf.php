@@ -253,3 +253,19 @@ if (!isset($GLOBALS['TYPO3_CONF_VARS']['LOG']['ApacheSolrForTypo3']['Solr']['wri
 
 // add tsconfig
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:solr/Configuration/TSconfig/ContentElementWizard.typoscript">');
+
+/** @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher $signalSlotDispatcher */
+$signalSlotDispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class);
+$signalSlotDispatcher->connect(
+    \TYPO3\CMS\Extbase\Persistence\Generic\Backend::class,
+    'afterUpdateObject',
+    \ApacheSolrForTypo3\Solr\IndexQueue\DomainObjectObserver::class,
+    'afterUpdateObject'
+);
+$signalSlotDispatcher->connect(
+    \TYPO3\CMS\Extbase\Persistence\Generic\Backend::class,
+    'afterRemoveObject',
+    \ApacheSolrForTypo3\Solr\IndexQueue\DomainObjectObserver::class,
+    'afterRemoveObject'
+);
+unset($signalSlotDispatcher);
