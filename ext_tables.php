@@ -96,6 +96,22 @@ if (TYPO3_MODE == 'BE') {
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
         'ApacheSolrForTypo3.' . $_EXTKEY,
         'searchbackend',
+        'IndexQueueReport',
+        '',
+        [
+            'Backend\\Search\\IndexQueueReportModule' => 'index, fixIndexQueue'
+        ],
+        [
+            'access' => 'user,group',
+            'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleIndexQueueReport.svg',
+            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_mod_indexqueuereport.xlf',
+            'navigationComponentId' => $treeComponentId
+        ]
+    );
+
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
+        'ApacheSolrForTypo3.' . $_EXTKEY,
+        'searchbackend',
         'IndexAdministration',
         '',
         [

@@ -1,0 +1,31 @@
+{namespace solr=ApacheSolrForTypo3\Solr\ViewHelpers}
+<f:layout name="Backend/WithPageTree"/>
+
+<f:section name="Main">
+
+	<h1>
+		<f:translate key="solr.backend.index_queue_module.header_init" />
+	</h1>
+
+	<hr class="section-divider" />
+
+	<f:for each="{indexqueue_initializationStatus}" as="queueStatus" key="queueName">
+
+		<div class="row-fluid section-with-header">
+			<h3>{queueName}</h3>
+
+			<f:for each="{queueStatus}" as="status" key="statusKey">
+				{statusKey}: {status}<br />
+			</f:for>
+
+
+			<f:form name="editform" action="fixIndexQueue" arguments="{configurationName: queueName}">
+
+				<f:form.submit name="fixit" value="Fix it" />
+
+			</f:form>
+		</div>
+
+	</f:for>
+
+</f:section>

@@ -181,6 +181,41 @@ class Queue
     }
 
     /**
+     * Synchronise the Index Queue for a specific indexing configuration.
+     *
+     * @param Site $site The site to initialize
+     * @param string $indexingConfigurationName name of a specific
+     *      indexing configuration
+     * @return boolean TRUE if the initialization was successful, FALSE otherwise
+     */
+    public function synchroniseIndexingConfiguration(
+        Site $site,
+        $indexingConfigurationName
+    ) {
+        $initializer = $this->getInitializerInstance($site, $indexingConfigurationName);
+
+        return $initializer->synchronise();
+    }
+
+    /**
+     *
+     * @param Site $site The site to initialize
+     * @param string $indexingConfigurationName Name of a specific
+     *      indexing configuration
+     * @return array An array of booleans, each representing whether the
+     *      initialization for an indexing configuration was successful
+     */
+    public function getInitializationStatus(Site $site, $indexingConfigurationName)
+    {
+
+        $initializer = $this->getInitializerInstance($site, $indexingConfigurationName);
+
+        $initializationStatus = $initializer->compare();
+
+        return $initializationStatus;
+    }
+
+    /**
      * Initializes the Index Queue for a specific indexing configuration.
      *
      * @param Site $site The site to initialize
@@ -193,6 +228,18 @@ class Queue
         // clear queue
         $this->deleteItemsBySite($site, $indexingConfigurationName);
 
+        $initializer = $this->getInitializerInstance($site, $indexingConfigurationName);
+
+        return $initializer->initialize();
+    }
+
+    /**
+     * @param Site $site
+     * @param string $indexingConfigurationName
+     * @return Initializer\AbstractInitializer|object
+     */
+    protected function getInitializerInstance(Site $site, $indexingConfigurationName)
+    {
         $solrConfiguration = $site->getSolrConfiguration();
 
         $tableToIndex = $solrConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
@@ -207,7 +254,7 @@ class Queue
         $indexConfiguration = $solrConfiguration->getIndexQueueConfigurationByName($indexingConfigurationName);
         $initializer->setIndexingConfiguration($indexConfiguration);
 
-        return $initializer->initialize();
+        return $initializer;
     }
 
     /**

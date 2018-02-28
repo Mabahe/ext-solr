@@ -168,6 +168,62 @@ abstract class AbstractInitializer implements IndexQueueInitializer
         return true;
     }
 
+    public function compare() {
+
+        $compareStatus = [];
+
+        $compareStatus['missing'] = $this->compareMissing();
+        $compareStatus['undeleted'] = $this->compareUndeleted();
+        $compareStatus['notUpToDate'] = $this->compareNotUpToDate();
+
+        return $compareStatus;
+    }
+
+
+    protected function compareUndeleted() {
+        return 'N/A';
+    }
+
+    protected function compareMissing() {
+
+        $count = $GLOBALS['TYPO3_DB']->exec_SELECTcountRows(
+            'uid',
+            $this->type,
+            $this->buildPagesClause()
+            . $this->buildTcaWhereClause()
+            . $this->buildUserWhereClause() . ' AND uid NOT IN (SELECT item_uid FROM tx_solr_indexqueue_item WHERE root = '
+            . '\'' . $this->site->getRootPageId() . '\' AND item_type = \''  . $this->type . '\')'
+
+        );
+
+        return $count;
+    }
+
+    protected function compareNotUpToDate() {
+        return 'N/A';
+    }
+
+    public function synchronise() {
+        $synchonised = false;
+
+        $synchronisationQuery = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, indexing_configuration, indexing_priority, changed) '
+            . $this->buildSelectStatement() . ' '
+            . 'FROM ' . $this->type . ' '
+            . 'WHERE '
+            . $this->buildPagesClause()
+            . $this->buildTcaWhereClause()
+            . $this->buildUserWhereClause() . ' AND uid NOT IN (SELECT item_uid FROM tx_solr_indexqueue_item WHERE root = '
+            . '\'' . $this->site->getRootPageId() . '\' AND item_type = \''  . $this->type . '\')';
+
+        $GLOBALS['TYPO3_DB']->sql_query($synchronisationQuery);
+
+        if (!$GLOBALS['TYPO3_DB']->sql_error()) {
+            $synchonised = true;
+        }
+
+        return $synchonised;
+    }
+
     /**
      * Builds the SELECT part of the Index Queue initialization query.
      *
