@@ -35,21 +35,24 @@ class SystemTemplateRepository extends AbstractRepository
      */
     public function findOneClosestPageIdWithActiveTemplateByRootLine(array $rootLine): ?int
     {
-        $rootLinePageIds = [0];
-        foreach ($rootLine as $rootLineItem) {
-            $rootLinePageIds[] = (int)$rootLineItem['uid'];
+        $rootLinePageIds = [];
+        $orderColumn = '(CASE pid';
+        foreach ($rootLine as $index => $rootLineItem) {
+            $rootLinePageId = (int)$rootLineItem['uid'];
+            $rootLinePageIds[] = $rootLinePageId;
+            $orderColumn .= ' WHEN ' . $rootLinePageId . ' THEN ' . $index;
         }
+        $orderColumn .= ' END) AS sort_index';
 
         $queryBuilder = $this->getQueryBuilder();
 
         $result = $queryBuilder
             ->select('uid', 'pid')
+            ->addSelectLiteral($orderColumn)
             ->from($this->table)
-            ->where(
-                $queryBuilder->expr()->in('pid', $rootLinePageIds)
-            )
-            ->executeQuery()
-            ->fetchAssociative();
+            ->where($queryBuilder->expr()->in('pid', $rootLinePageIds))
+            ->orderBy('sort_index', 'DESC') // rootline indices are reversed
+            ->execute()->fetch();
 
         return $result['pid'] ?? null;
     }
