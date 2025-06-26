@@ -4,6 +4,7 @@
  */
 
 use ApacheSolrForTypo3\Solr\Controller\Backend\Search\CoreOptimizationModuleController;
+use ApacheSolrForTypo3\Solr\Controller\Backend\Search\EventQueueModuleController;
 use ApacheSolrForTypo3\Solr\Controller\Backend\Search\IndexAdministrationModuleController;
 use ApacheSolrForTypo3\Solr\Controller\Backend\Search\IndexQueueModuleController;
 use ApacheSolrForTypo3\Solr\Controller\Backend\Search\InfoModuleController;
@@ -68,6 +69,19 @@ return [
         'controllerActions' => [
             IndexAdministrationModuleController::class => [
                 'index', 'emptyIndex', 'clearIndexQueue', 'reloadIndexConfiguration', 'switchSite',
+            ],
+        ],
+    ],
+    'searchbackend_eventqueue' => [
+        'parent' => 'searchbackend',
+        'access' => 'user',
+        'path' => '/module/searchbackend/event-queue',
+        'iconIdentifier' => 'extensions-solr-module-event-queue',
+        'labels' => 'LLL:EXT:solr/Resources/Private/Language/locallang_mod_eventqueue.xlf',
+        'extensionName' => 'Solr',
+        'controllerActions' => [
+            EventQueueModuleController::class => [
+                'index',
             ],
         ],
     ],

@@ -27,6 +27,10 @@ return [
         'provider' => SvgIconProvider::class,
         'source' => 'EXT:solr/Resources/Public/Images/Icons/ModuleIndexQueue.svg',
     ],
+    'extensions-solr-module-event-queue' => [
+        'provider' => SvgIconProvider::class,
+        'source' => 'EXT:solr/Resources/Public/Images/Icons/ModuleEventQueue.svg',
+    ],
     'extensions-solr-module-info' => [
         'provider' => SvgIconProvider::class,
         'source' => 'EXT:solr/Resources/Public/Images/Icons/ModuleInfo.svg',
