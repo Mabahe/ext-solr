@@ -131,6 +131,23 @@ defined('TYPO3') || die();
             ]
         );
 
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
+            'Solr',
+            'searchbackend',
+            'EventQueue',
+            '',
+            [
+                \ApacheSolrForTypo3\Solr\Controller\Backend\Search\EventQueueModuleController::class =>
+                    'index',
+            ],
+            [
+                'access' => 'user,group',
+                'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleEventQueue.svg',
+                'labels' => 'LLL:EXT:solr/Resources/Private/Language/locallang_mod_eventqueue.xlf',
+                'navigationComponentId' => $treeComponentId,
+            ]
+        );
+
         // registering reports
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['solr'] = [
         \ApacheSolrForTypo3\Solr\Report\SiteHandlingStatus::class,

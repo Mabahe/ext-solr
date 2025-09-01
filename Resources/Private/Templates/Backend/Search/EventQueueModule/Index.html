@@ -1,0 +1,62 @@
+{namespace solr=ApacheSolrForTypo3\Solr\ViewHelpers}
+<f:layout name="Backend/WithPageTree"/>
+
+<f:section name="Main">
+	<f:be.pageRenderer includeCssFiles="{0: 'EXT:solr/Resources/Public/StyleSheets/Backend/IndexQueueModule.css'}" includeRequireJsModules="{0:'TYPO3/CMS/Solr/FormModal'}"/>
+
+	<h1>Event Queue</h1>
+	<p class="lead"><f:translate key="solr.backend.event_queue_module.description" /></p>
+
+	<hr class="section-divider" />
+
+		<div class="row section-with-header">
+			<div class="col-md-12">
+				<h2>
+					<f:translate key="solr.backend.event_queue_moduleheader_status"/>
+				</h2>
+
+
+				<f:if condition="{eventqueue_events}">
+					<div class="row">
+						<div class="col-md-12">
+							<h2>
+								<f:translate key="solr.backend.event_queue_module.errors.headline"/>
+							</h2>
+
+							<table class="table table-condensed table-hover table-striped">
+								<tr>
+									<th>
+										UID
+									</th>
+									<th>
+										Type
+									</th>
+									<th>
+										Record
+									</th>
+									<th>
+										Record UID
+									</th>
+									<th>
+										Error
+									</th>
+								</tr>
+
+								<f:for each="{eventqueue_events}" as="event">
+									<tr>
+										<td>{event.uid}</td>
+										<td>{event.className}</td>
+										<td>{event.event.table}</td>
+										<td>{event.event.uid}</td>
+										<td>{event.error_message}</td>
+									</tr>
+								</f:for>
+							</table>
+
+						</div>
+					</div>
+				</f:if>
+			</div>
+		</div>
+
+</f:section>
